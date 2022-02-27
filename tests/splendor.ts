@@ -4,7 +4,7 @@ import { Program } from "@project-serum/anchor";
 import { Splendor } from "../target/types/splendor";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-describe("splendor", () => {
+describe("Initializes vault", () => {
 
   // Configure the client to use the local cluster.
   const provider = anchor.Provider.env()
@@ -31,8 +31,6 @@ describe("splendor", () => {
   let bumps: Array<number>;
   let info_bump, admin_bump, token_a_bump, token_b_bump, tutoken_a_bump, tutoken_b_bump = [255,255,255,255,255,255];
   it("Vault initialized!", async () => {
-
-
     console.log("Admin Key:", vaultAdmin.publicKey.toString());
     console.log("Info Key:", vaultInfo.publicKey.toString());
     console.log("Authority Key:", vaultAuthority.publicKey.toString());

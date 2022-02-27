@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("xmtn2vByiRMraod2aVHYXB9mxRJQ3Z3Y7SnvSdAy8qn");
 
 pub mod constants;
 pub mod ctx_accounts;

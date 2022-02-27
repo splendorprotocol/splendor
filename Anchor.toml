@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-splendor = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+splendor = "xmtn2vByiRMraod2aVHYXB9mxRJQ3Z3Y7SnvSdAy8qn"
 
 [registry]
 url = "https://anchor.projectserum.com"
