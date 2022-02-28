@@ -11,20 +11,7 @@ use crate::ctx_accounts::*;
 /// Accounts in context of initialize_vault instruction
 #[derive(Accounts)]
 #[instruction(
-    vault_name: String, 
-    //vault_bumps: [u8; 6],
-    //mint: Pubkey,
-    // info_bump: u8,
-    // authority_bump: u8,
-    // token_a_bump: u8,
-    // token_b_bump: u8,
-    // tutoken_a_bump: u8,
-    // tutoken_b_bump: u8,
-    // redeemable_mint_bump: u8,
-    // token_a_mint_address: Pubkey,
-    // token_b_mint_address: Pubkey,
-    // tutoken_a_mint_address: Pubkey,
-    // tutoken_b_mint_address: Pubkey,
+    vault_name: String,
 )]
 pub struct InitializeVault<'info> {
     

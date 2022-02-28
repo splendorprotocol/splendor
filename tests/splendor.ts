@@ -139,13 +139,6 @@ describe("splendor", () =>  {
     
     const tx = await program.rpc.initializeVault(
       vaultName, 
-      // infoBump,
-      // authorityBump,
-      // tokenABump,
-      // tokenBBump,
-      // tutokenABump,
-      // tutokenBBump,
-      // redeemBump,
       {
       accounts : {
         // Vault Stuff
@@ -172,12 +165,6 @@ describe("splendor", () =>  {
       },
       signers : [
         vaultAdmin, 
-        //vaultInfo, 
-        //vaultAuthority, 
-        //vaultTokenA, 
-        //vaultTokenB, 
-        //vaultTutokenA, 
-        //vaultTutokenB, 
         redeemableMint
       ]
     });
