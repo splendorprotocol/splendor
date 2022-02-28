@@ -8,10 +8,10 @@ use anchor_lang::prelude::*;
 pub struct VaultInfo {
 
     /// Mint address of token A
-    pub token_a: u64,
+    pub token_a: Pubkey,
 
     /// Mint address of token B
-    pub token_b: u64,
+    pub token_b: Pubkey,
 
     // Bumps
     //pub vault_bumps: VaultBumps,
@@ -20,7 +20,7 @@ pub struct VaultInfo {
 #[account]
 #[derive(Default)]
 pub struct VaultAuthority {
-    pub authority: u8,
+    pub authority: Pubkey,
 }
 
 // #[account]
