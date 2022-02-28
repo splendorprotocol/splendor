@@ -2,10 +2,8 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use anchor_spl::{
     associated_token::AssociatedToken,
-    mint,
 };
 use crate::constants::*;
-use crate::address;
 use crate::ctx_accounts::*;
 
 

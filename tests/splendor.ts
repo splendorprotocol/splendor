@@ -26,7 +26,6 @@ describe("splendor", () =>  {
   const spUSDkeypair = anchor.web3.Keypair.fromSecretKey(new Uint8Array([94,72,178,199,151,81,193,85,53,212,142,34,37,128,124,29,79,234,16,198,97,109,182,160,112,20,110,35,144,56,23,232,13,5,66,63,76,188,59,12,250,43,142,85,124,197,238,48,27,80,40,211,214,98,248,234,64,110,121,137,27,19,69,3]));
   const redeemableMint = spUSDkeypair;
   const vaultName = "USDC-USDT";
-  console.log(vaultAdmin);
 
   let programConstants = Object.assign({}, ...program.idl.constants.map((x) => ({[x.name]: x.value.slice(1,-1)})));
 
