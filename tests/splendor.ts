@@ -170,7 +170,9 @@ describe("splendor", () =>  {
     });
     console.log("Your transaction signature", tx);
 
-    //let vaultAccount = await program.account.vault_info.fetch(vault_info.publicKey);
-    //let vaultAccount = await program.account.vaultBumps.fetch(vaultBumps.publicKey)
+    // Fetch vaultInfo account
+    let vaultInfoAccount = await program.account.vaultInfo.fetch(vaultInfo);
+    // Assert vaultName stored properly
+    assert(Buffer.from(Uint8Array.from(vaultInfoAccount.vaultName.filter(x => x != 0 ))).equals(Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))));
   })
 });

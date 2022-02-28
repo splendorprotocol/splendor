@@ -2,7 +2,7 @@
 
 use anchor_lang::prelude::*;
 
-/// Accounts in context of initialize_vault instruction
+// Accounts in context of initialize_vault instruction
 #[account]
 #[derive(Default)]
 pub struct VaultInfo {
@@ -13,7 +13,9 @@ pub struct VaultInfo {
     /// Mint address of token B
     pub token_b: Pubkey,
 
-    // pub vault_name: [u8; 20],
+    /// Vault name (u128 is 16 bytes)
+    pub vault_name: [u8; 20],
+
     // Bumps
     //pub vault_bumps: VaultBumps,
 }

@@ -21,14 +21,22 @@ pub mod splendor {
         _ctx: Context<InitializeVault>,
         _vault_name: String,
     ) -> ProgramResult {
-        // let name_bytes = _vault_name.as_bytes();
-        // let mut name_data = [b' '; 20];
-        // name_data[..name_bytes.len()].copy_from_slice(name_bytes);
+        
+        // Initialize byte array to zeros
+        let mut name_byte_array : [u8; 20] = [0; 20];
 
+        // Load bytes into array
+        for (i, byte) in _vault_name.as_bytes().iter().enumerate() {
+
+            // This method (correctly) breaks when length > 20
+            name_byte_array[i] = *byte;
+        }
+        
+        // Initialize vault info
         let vault_info = &mut _ctx.accounts.vault_info;
         vault_info.token_a = _ctx.accounts.token_a_mint.key();
         vault_info.token_b = _ctx.accounts.token_b_mint.key();
-        // vault_info.vault_name = name_data;
+        vault_info.vault_name = name_byte_array;
 
         Ok(())
     }
