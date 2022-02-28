@@ -13,6 +13,7 @@ pub struct VaultInfo {
     /// Mint address of token B
     pub token_b: Pubkey,
 
+    // pub vault_name: [u8; 20],
     // Bumps
     //pub vault_bumps: VaultBumps,
 }

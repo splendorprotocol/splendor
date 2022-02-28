@@ -127,3 +127,24 @@ pub struct InitializeVault<'info> {
     /// Associated Token Program
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
+
+// #[derive(Accounts)]
+// pub struct MintSpUSD<'info> {
+//     /// Vault admin
+//     #[account(mut)]
+//     pub user: Signer<'info>,
+//     #[account(mut)]
+//     pub vault_info: Box<Account<'info, VaultInfo>>,
+//     #[account(mut)]
+//     pub redeemable_mint: Box<Account<'info, Mint>>,
+//     #[account()]
+//     pub deposit_token_mint: Box<Account<'info, Mint>>,
+//     #[account()]
+//     pub tu_deposit_token_mint: Box<Account<'info, Mint>>,
+//     #[account(
+//         seeds = [{msg!("initializing vault_authority"); VAULT_AUTHORITY_SEED}.as_bytes(), vault_info.vault_name.as_bytes()],
+//         bump,
+//     )]
+//     pub vault_authority: Box<Account<'info, VaultAuthority>>,
+//     pub system_program: Program<'info, System>,
+// }
