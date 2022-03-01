@@ -22,8 +22,10 @@ describe("splendor", () =>  {
   const program = anchor.workspace.Splendor as Program<Splendor>;
 
   // Generate keypair for vaultAdmin
-  const vaultAdmin = anchor.web3.Keypair.fromSecretKey(new Uint8Array([163,72,84,87,235,8,243,88,220,9,114,139,248,126,32,87,184,27,39,63,126,80,77,194,107,36,159,41,242,220,57,31,7,67,143,30,162,22,245,203,124,227,92,15,133,20,96,35,0,85,161,213,94,67,152,247,156,155,235,150,253,61,14,51]));
-  const spUSDkeypair = anchor.web3.Keypair.fromSecretKey(new Uint8Array([94,72,178,199,151,81,193,85,53,212,142,34,37,128,124,29,79,234,16,198,97,109,182,160,112,20,110,35,144,56,23,232,13,5,66,63,76,188,59,12,250,43,142,85,124,197,238,48,27,80,40,211,214,98,248,234,64,110,121,137,27,19,69,3]));
+  const data = fs.readFileSync('devlet2.json', {encoding:'utf8', flag:'r'}).slice(1,-1).split(",");
+  const redeemData = fs.readFileSync('vanity/USD6kRczLP5uV5G9dDSRFRBgnvJR9Po6q1V1vSw1H4q.json', {encoding:'utf8', flag:'r'}).slice(1,-1).split(",");
+  const vaultAdmin = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(data));
+  const spUSDkeypair = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(redeemData));
   const redeemableMint = spUSDkeypair;
   const vaultName = "USDC-USDT";
 
@@ -174,5 +176,100 @@ describe("splendor", () =>  {
     let vaultInfoAccount = await program.account.vaultInfo.fetch(vaultInfo);
     // Assert vaultName stored properly
     assert(Buffer.from(Uint8Array.from(vaultInfoAccount.vaultName.filter(x => x != 0 ))).equals(Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))));
+  })
+
+  it("User Deposit!", async () => {
+
+    const user = vaultAdmin;
+
+    let [vaultInfo, infoBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_INFO_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found Info PDA (seed =", programConstants['VAULT_INFO_SEED'], "):", vaultInfo.toString(), infoBump);
+    // vaultAuthority
+    let [vaultAuthority, authorityBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_AUTHORITY_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found Authority PDA (seed =", programConstants["VAULT_AUTHORITY_SEED"], "):", vaultAuthority.toString(), authorityBump);
+    // vaultTokenA
+    let [vaultTokenA, tokenABump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_TOKENA_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found TokenA ATA (seed = ", programConstants["VAULT_TOKENA_SEED"], "):", vaultTokenA.toString(), tokenABump);
+    // vaultTokenB
+    let [vaultTokenB, tokenBBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_TOKENB_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found TokenB ATA (seed = ", programConstants["VAULT_TOKENB_SEED"], "):", vaultTokenB.toString(), tokenBBump);
+    // vaultTutokena
+    let [vaultTutokenA, tutokenABump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_TUTOKENA_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found TutokenA ATA (seed =", programConstants['VAULT_TUTOKENA_SEED'], "):", vaultTutokenA.toString(), tutokenABump);
+    // vaultTutokenB
+    let [vaultTutokenB, tutokenBBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_TUTOKENB_SEED'])),
+        Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
+      ],
+      program.programId
+    )
+    console.log("Found TutokenB ATA (seed =", programConstants['VAULT_TUTOKENB_SEED'], "):", vaultTutokenB.toString(), tutokenBBump);
+
+    const tx = await program.rpc.deposit(
+      
+      // Instruction Arguments
+      [infoBump, authorityBump, tokenABump, tokenBBump, tutokenABump, tutokenBBump],
+      1, 
+      1,
+
+      // Accounts
+      {
+      accounts : {
+        
+        user: user.publicKey,
+        // Vault Stuff
+        vaultInfo: vaultInfo,
+        vaultAuthority: vaultAuthority,
+        // Token Mints
+        tokenAMint: tokenAMint,
+        tokenBMint: tokenBMint,
+        tutokenAMint: tutokenAMint,
+        tutokenBMint: tutokenBMint,
+        // Token Vaults
+        vaultTokenA: vaultTokenA,
+        vaultTokenB: vaultTokenB,
+        vaultTutokenA: vaultTutokenA,
+        vaultTutokenB: vaultTutokenB,
+        // spX Mint
+        redeemableMint: redeemableMint.publicKey,
+        // System Stuff
+        systemProgram: systemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      },
+      signers : [user]
+    })
+
   })
 });
