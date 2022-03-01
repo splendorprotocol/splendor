@@ -1,14 +1,40 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
-use anchor_spl::{
-    associated_token::AssociatedToken,
-};
+use anchor_spl::associated_token::AssociatedToken;
 use crate::constants::*;
-use crate::ctx_accounts::*;
+use crate::types::ProgramResult;
 
 
 
-/// Accounts in context of initialize_vault instruction
+pub fn handler(
+    ctx: Context<InitializeVault>,
+    vault_name: String,
+) -> ProgramResult {
+
+    // Initialize byte array to zeros
+    let mut name_byte_array : [u8; 20] = [0; 20];
+
+    // Load bytes into array
+    for (i, byte) in vault_name.as_bytes().iter().enumerate() {
+
+        // This method (correctly) breaks when length > 20
+        name_byte_array[i] = *byte;
+    }
+
+    // Grab vault_info account
+    let vault_info = &mut ctx.accounts.vault_info;
+
+    // Initialize vault info data
+    vault_info.vault_name = name_byte_array;
+    vault_info.token_a_mint = ctx.accounts.token_a_mint.key();
+    vault_info.token_b_mint = ctx.accounts.token_b_mint.key();
+    vault_info.redeemable_mint = ctx.accounts.redeemable_mint.key();
+
+    Ok(())
+}
+
+/// Create context of initialize_vault
+/// Gather accounts required for initialize_vault instruction
 #[derive(Accounts)]
 #[instruction(
     vault_name: String,
@@ -128,23 +154,25 @@ pub struct InitializeVault<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
-// #[derive(Accounts)]
-// pub struct MintSpUSD<'info> {
-//     /// Vault admin
-//     #[account(mut)]
-//     pub user: Signer<'info>,
-//     #[account(mut)]
-//     pub vault_info: Box<Account<'info, VaultInfo>>,
-//     #[account(mut)]
-//     pub redeemable_mint: Box<Account<'info, Mint>>,
-//     #[account()]
-//     pub deposit_token_mint: Box<Account<'info, Mint>>,
-//     #[account()]
-//     pub tu_deposit_token_mint: Box<Account<'info, Mint>>,
-//     #[account(
-//         seeds = [{msg!("initializing vault_authority"); VAULT_AUTHORITY_SEED}.as_bytes(), vault_info.vault_name.as_bytes()],
-//         bump,
-//     )]
-//     pub vault_authority: Box<Account<'info, VaultAuthority>>,
-//     pub system_program: Program<'info, System>,
-// }
+
+// Accounts in context of initialize_vault instruction
+#[account]
+#[derive(Default)]
+pub struct VaultInfo {
+    /// Vault name 
+    pub vault_name: [u8; 20],
+
+    /// Mint address of token A
+    pub token_a_mint: Pubkey,
+
+    /// Mint address of token B
+    pub token_b_mint: Pubkey,
+
+    // Redeemable mint
+    pub redeemable_mint: Pubkey,
+}
+
+#[account]
+#[derive(Default)]
+pub struct VaultAuthority {
+}
