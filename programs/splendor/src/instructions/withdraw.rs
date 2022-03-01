@@ -7,20 +7,20 @@ use crate::instructions::initialize_vault::{VaultAuthority, VaultInfo};
 
 
 pub fn handler(
-    ctx: Context<Deposit>,
+    ctx: Context<Withdraw>,
     token_a_lamports: u32,
     token_b_lamports: u32,
 ) -> ProgramResult {
 
-    // Transfer token A/B from user to vault
+    // Burn redeemable from user
     // TODO
 
-    // Deposits
+    // withdraws
     let dummy_cpi_ctx = ctx;
-    let dummy_tulip_cpi = |ctx : Context<Deposit>, a, b| {
+    let dummy_tulip_cpi = |ctx : Context<Withdraw>, a, b| {
         // uses cpi_ctx containing (at least) A/B, tuA/tuB mints, as well
         // also
-        msg!("Running dummy tulip cpi with {:?}! Pseudo-depositing {} token A lamports and {} token B lamports", 
+        msg!("Running dummy tulip cpi with {:?}! Pseudo-withdrawing {} token A lamports and {} token B lamports", 
             ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>(), 
             a, 
             b,
@@ -28,19 +28,19 @@ pub fn handler(
     };
     dummy_tulip_cpi(dummy_cpi_ctx, token_a_lamports, token_b_lamports);
 
-    // Mint and send spAsset to user
-    // TODO
+    // Transfer token a/b to user
+     // TODO
 
     Ok(())
 }
 
-/// Create context of deposit
-/// Gather accounts required for deposit instruction
+/// Create context of withdraw
+/// Gather accounts required for withdraw instruction
 #[derive(Accounts)]
 #[instruction(
     bumps: [u8; 6],
 )]
-pub struct Deposit<'info> {
+pub struct Withdraw<'info> {
     
     /// user
     #[account(mut)]

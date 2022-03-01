@@ -8,9 +8,13 @@ pub mod address;
 pub mod instructions;
 pub mod types;
 
-use types::*;
+use types::ProgramResult;
+
+// import instruction handlers
 use instructions::initialize_vault::*;
 use instructions::deposit::*;
+use instructions::withdraw::*;
+use instructions::swap::*;
 
 
 #[program]
@@ -26,12 +30,30 @@ pub mod splendor {
 
     pub fn deposit(
         ctx: Context<Deposit>,
-        bumps: [u8; 6],
+        _bumps: [u8; 6],
         token_a_lamports: u32,
         token_b_lamports: u32,
     ) -> ProgramResult {
-        msg!("successfully entered ctx");
         instructions::deposit::handler(ctx, token_a_lamports, token_b_lamports)
+    }
+
+    pub fn withdraw(
+        ctx: Context<Withdraw>,
+        _bumps: [u8; 6],
+        token_a_lamports: u32,
+        token_b_lamports: u32,
+    ) -> ProgramResult {
+        instructions::withdraw::handler(ctx, token_a_lamports, token_b_lamports)
+    }
+
+    pub fn swap(
+        ctx: Context<Swap>,
+        _bumps: [u8; 6],
+        lamports: u32,
+        min_out_lamports: u32,
+        is_token_a: bool,
+    ) -> ProgramResult {
+        instructions::swap::handler(ctx, lamports, min_out_lamports, is_token_a)
     }
 }
 

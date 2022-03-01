@@ -7,40 +7,56 @@ use crate::instructions::initialize_vault::{VaultAuthority, VaultInfo};
 
 
 pub fn handler(
-    ctx: Context<Deposit>,
-    token_a_lamports: u32,
-    token_b_lamports: u32,
+    ctx: Context<Swap>,
+    lamports: u32,
+    min_out_lamports: u32,
+    is_token_a: bool,
 ) -> ProgramResult {
 
-    // Transfer token A/B from user to vault
+    // Transfer token
     // TODO
+    if is_token_a {
 
-    // Deposits
+    } else {
+
+    }
+
+    // withdraw other token
     let dummy_cpi_ctx = ctx;
-    let dummy_tulip_cpi = |ctx : Context<Deposit>, a, b| {
+    let dummy_tulip_cpi = |ctx : Context<Swap>, a, b, c| {
         // uses cpi_ctx containing (at least) A/B, tuA/tuB mints, as well
         // also
-        msg!("Running dummy tulip cpi with {:?}! Pseudo-depositing {} token A lamports and {} token B lamports", 
-            ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>(), 
-            a, 
-            b,
-        );
-    };
-    dummy_tulip_cpi(dummy_cpi_ctx, token_a_lamports, token_b_lamports);
+        if c {
+            msg!("Running dummy tulip cpi with {:?}! Pseudo-swaping {} token A lamports for at least {} token B lamports", 
+                ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>(), 
+                a, 
+                b,
+            );
+        } else {
+            msg!("Running dummy tulip cpi with {:?}! Pseudo-swaping {} token B lamports for at least {} token A lamports", 
+                ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>(), 
+                a, 
+                b,
+            );
 
-    // Mint and send spAsset to user
-    // TODO
+        }
+    };
+    
+    dummy_tulip_cpi(dummy_cpi_ctx, lamports, min_out_lamports, is_token_a);
+
+    // Transfer token a/b to user
+     // TODO
 
     Ok(())
 }
 
-/// Create context of deposit
-/// Gather accounts required for deposit instruction
+/// Create context of swap
+/// Gather accounts required for swap instruction
 #[derive(Accounts)]
 #[instruction(
     bumps: [u8; 6],
 )]
-pub struct Deposit<'info> {
+pub struct Swap<'info> {
     
     /// user
     #[account(mut)]
