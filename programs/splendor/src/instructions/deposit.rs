@@ -21,7 +21,7 @@ pub fn handler(
         // uses cpi_ctx containing (at least) A/B, tuA/tuB mints, as well
         // also
         msg!("Running dummy tulip cpi with {:?}! Pseudo-depositing {} token A lamports and {} token B lamports", 
-        std::str::from_utf8(&ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>()), 
+        ctx.accounts.vault_info.vault_name.iter().filter(|x| **x != 0).map(|&x| x).collect::<Vec<u8>>(), 
         a, 
         b,
     );
