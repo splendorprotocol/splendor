@@ -4,15 +4,15 @@ import { Keypair } from '@solana/web3.js'
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { Splendor } from "../target/types/splendor";
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { rpc } from '@project-serum/anchor/dist/cjs/utils';
 
-const TOKEN_A_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const TOKEN_B_MINT = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
+const TOKEN_A_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; //USDC
+const TOKEN_B_MINT = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"; //USDT
 const TUTOKEN_A_MINT = "Amig8TisuLpzun8XyGfC5HJHHGUQEscjLgoTWsCCKihg";
 const TUTOKEN_B_MINT = "gLhY2arqFpmVGkpbBbTi3TeWbsWevA8dqrwbKacK3vJ";
 
-const debug = false;
+const debug = true;
 if (!debug) {
   console.log = function(){};
 }
@@ -120,15 +120,6 @@ describe("splendor", () =>  {
       program.programId
     )
     console.log("Found TutokenB ATA (seed =", programConstants['VAULT_TUTOKENB_SEED'], "):", vaultTutokenB.toString(), tutokenBBump);
-    // redeemableMint
-    // let [redeemableMint, redeemBump] = await anchor.web3.PublicKey.findProgramAddress(
-    //   [
-    //     Buffer.from(anchor.utils.bytes.utf8.encode(programConstants['VAULT_REDEEMABLE_MINT_SEED'])),
-    //     Buffer.from(anchor.utils.bytes.utf8.encode(vaultName))
-    //   ],
-    //   program.programId
-    // )
-    //console.log("Found RedeemableMint PDA(seed = ", programConstants["VAULT_REDEEMABLE_MINT_SEED"], "):", redeemableMint.toString(), redeemBump);
     console.log("Redeemable Mint (grinded) =", redeemableMint.publicKey.toString());
     console.log("-".repeat(50));
     
@@ -184,6 +175,7 @@ describe("splendor", () =>  {
   })
 
   it("User Deposit!", async () => {
+    console.log("log here first")
 
     const user = vaultAdmin;
 
@@ -241,6 +233,21 @@ describe("splendor", () =>  {
     )
     console.log("Found TutokenB ATA (seed =", programConstants['VAULT_TUTOKENB_SEED'], "):", vaultTutokenB.toString(), tutokenBBump);
 
+
+    const usdcMintAccount = new Token(
+      provider.connection,
+      new anchor.web3.PublicKey(tutokenAMint),
+      TOKEN_PROGRAM_ID,
+      (provider.wallet as anchor.Wallet).payer
+    );
+
+    const userUSDC = await usdcMintAccount.createAssociatedTokenAccount(
+      vaultAdmin.publicKey
+    );
+
+    console.log("after create usdc ata", userUSDC.toString())
+    console.log("user public key", user.publicKey.toString())
+
     const tx = await program.rpc.deposit(
       
       // Instruction Arguments
@@ -250,8 +257,11 @@ describe("splendor", () =>  {
       // Accounts
       {
       accounts : {
-        
+      
         user: user.publicKey,
+        userATokenAta: userUSDC,
+        userBTokenAta: userUSDC,
+        // userATokenAta: 
         // Vault Stuff
         vaultInfo: vaultInfo,
         vaultAuthority: vaultAuthority,
@@ -271,9 +281,16 @@ describe("splendor", () =>  {
         systemProgram: systemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+        lendingProgram: new anchor.web3.PublicKey("4bcFeLv4nydFrsZqV5CgwCVrPhkQKsXtzfy2KyMz7ozM"),
+        // Tulip Accounts
+        destinationCollateral: new anchor.web3.PublicKey("2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"),
+        reserveAccount: new anchor.web3.PublicKey("FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt"),
+        reserveLiquiditySupply: new anchor.web3.PublicKey("64QJd6MYXUjCBvCaZKaqxiKmaMkPUdNonE1KuY1YoGGb"),
+        lendingMarket: new anchor.web3.PublicKey("D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym")
       },
       signers : [user]
     })
+    console.log("tx", tx)
 
   })
 

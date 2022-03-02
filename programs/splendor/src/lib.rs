@@ -56,5 +56,3 @@ pub mod splendor {
         instructions::swap::handler(ctx, lamports, min_out_lamports, is_token_a)
     }
 }
-
-

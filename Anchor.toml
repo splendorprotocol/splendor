@@ -17,17 +17,30 @@ address = "Amig8TisuLpzun8XyGfC5HJHHGUQEscjLgoTWsCCKihg"
 [[test.validator.clone]]
 address = "gLhY2arqFpmVGkpbBbTi3TeWbsWevA8dqrwbKacK3vJ"
 [[test.validator.clone]]
-address = "VMc13PVs9GBhL1hxXeF33XtaKVMjg8YyMMszGawFPS2"
+address = "8ojYYusVjAKTB7tHjKb9oCBubhhU4vHQDNCcUAdg2ikb"
 [[test.validator.clone]]
-address = "936Ae3riWbnC5KbvsnkBnJ6F7wjHUNNk2SMNEMvPwiyp"
+address = "DpxS9YTv7e7MD9USgniaG4G5n4gVGAk8HJ6p7AXDXcxq"
 [[test.validator.clone]]
-address = "BJb1uP68pEuvRojzM61JR49pNSodihorVk6TosVMsr74"
+address = "5KuYEobaCTkQntwdHBZZJpo8HLAb3ruvcWKC1z5RHGJk"	
+[[test.validator.clone]]
+address = "FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt"
+[[test.validator.clone]]
+address = "64QJd6MYXUjCBvCaZKaqxiKmaMkPUdNonE1KuY1YoGGb"
+[[test.validator.clone]]
+address = "D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym"
+[[test.validator.clone]]
+address = "HsUZsMSrGBvGBncppitE4Ug8qJypZwHRgStYzCEW8fiD"
+[[test.validator.clone]]
+address = "2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"
 [test.validator]
 url = "m"
 
 [provider]
 cluster = "localnet"
-wallet = "~/.config/solana/id.json"
+wallet = "./devlet2.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 60000
