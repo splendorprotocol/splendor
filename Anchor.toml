@@ -7,21 +7,25 @@ splendor = "xmtn2vByiRMraod2aVHYXB9mxRJQ3Z3Y7SnvSdAy8qn"
 url = "https://anchor.projectserum.com"
 
 [[test.validator.clone]]
-address = "4bcFeLv4nydFrsZqV5CgwCVrPhkQKsXtzfy2KyMz7ozM"
+address = "4bcFeLv4nydFrsZqV5CgwCVrPhkQKsXtzfy2KyMz7ozM" # TULIP PROGRAM
 [[test.validator.clone]]
-address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" # USDC
 [[test.validator.clone]]
-address = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+address = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" # USDT
 [[test.validator.clone]]
-address = "Amig8TisuLpzun8XyGfC5HJHHGUQEscjLgoTWsCCKihg"
+address = "Amig8TisuLpzun8XyGfC5HJHHGUQEscjLgoTWsCCKihg" # TUUSDC
 [[test.validator.clone]]
-address = "gLhY2arqFpmVGkpbBbTi3TeWbsWevA8dqrwbKacK3vJ"
+address = "gLhY2arqFpmVGkpbBbTi3TeWbsWevA8dqrwbKacK3vJ"  # TUUSDT
 [[test.validator.clone]]
-address = "8ojYYusVjAKTB7tHjKb9oCBubhhU4vHQDNCcUAdg2ikb"
+address = "8ojYYusVjAKTB7tHjKb9oCBubhhU4vHQDNCcUAdg2ikb" # DEVLET (2)
 [[test.validator.clone]]
-address = "DpxS9YTv7e7MD9USgniaG4G5n4gVGAk8HJ6p7AXDXcxq"
+address = "DpxS9YTv7e7MD9USgniaG4G5n4gVGAk8HJ6p7AXDXcxq" # DEVLET USDC (2)
 [[test.validator.clone]]
-address = "5KuYEobaCTkQntwdHBZZJpo8HLAb3ruvcWKC1z5RHGJk"	
+address = "5KuYEobaCTkQntwdHBZZJpo8HLAb3ruvcWKC1z5RHGJk" # DEVLET USDT (2)
+[[test.validator.clone]]
+address = "6wQkK76HdRLtVB11V6Tcvp92WmSwSSf6V64kvYbe3xTd" # DEVLET TUUSDC (2)
+[[test.validator.clone]]
+address = "34bmioDCWJqaig6SN3b28TAAtrbWL35byabBVmagVzR7" # DEVLET TUUSDT (2)
 [[test.validator.clone]]
 address = "FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt"
 [[test.validator.clone]]
@@ -32,6 +36,7 @@ address = "D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym"
 address = "HsUZsMSrGBvGBncppitE4Ug8qJypZwHRgStYzCEW8fiD"
 [[test.validator.clone]]
 address = "2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"
+
 [test.validator]
 url = "m"
 
