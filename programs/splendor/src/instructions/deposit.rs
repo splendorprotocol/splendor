@@ -20,17 +20,34 @@ pub fn handler(
         &ctx.accounts.lending_program.key,
     );
 
-    msg!("hererererererere in deposit program\nlending program: {}\nuser token a: {}\nvault tutoken a: {}\nreserve acct: {}\nreserve liq sup: {}\ntoken a mint: {}\n lending market: {}\nuser: {}", 
-        ctx.accounts.lending_program.key,
-        ctx.accounts.user_a_token_ata.key(),
-        ctx.accounts.destination_collateral.key(),
-        ctx.accounts.reserve_account.key,
-        ctx.accounts.reserve_liquidity_supply.key(),
-        ctx.accounts.token_a_mint.key(),
-        ctx.accounts.lending_market.key,
-        ctx.accounts.user.key,
-        //ctx.accounts.lending_market_authority.key,
+    msg!("token a ming {}", ctx.accounts.token_a_mint.key());
+    // msg!("hererererererere in deposit program\nlending program: {}\nuser token a: {}\nvault tutoken a: {}\nreserve acct: {}\nreserve liq sup: {}\ntoken a mint: {}\n lending market: {}\nuser: {}", 
+    //     ctx.accounts.lending_program.key,
+    //     ctx.accounts.user_a_token_ata.key(),
+    //     ctx.accounts.destination_collateral.key(),
+    //     ctx.accounts.reserve_account.key,
+    //     ctx.accounts.reserve_liquidity_supply.key(),
+    //     ctx.accounts.token_a_mint.key(),
+    //     ctx.accounts.lending_market.key,
+    //     ctx.accounts.user.key,
+    //     //ctx.accounts.lending_market_authority.key,
+    // );
+
+    // Deposit token a
+    let ix = spl_token_lending::instruction::refresh_reserve(
+        *ctx.accounts.lending_program.key,
+        *ctx.accounts.reserve_account.key,
+        ctx.accounts.price_oracle.key(),
     );
+
+    // msg!("{:?}",ctx.accounts.user.to_account_info());
+    // msg!("{:?}",ctx.accounts.lending_market.to_account_info());
+    // msg!("{:?}",ctx.accounts.lending_market_authority.to_account_info());
+    // msg!("about to invoke");
+    solana_program::program::invoke(
+        &ix,
+        &ctx.accounts.to_account_infos(),
+    )?;
 
     // Deposit token a
     let ix = spl_token_lending::instruction::deposit_reserve_liquidity(
@@ -41,16 +58,16 @@ pub fn handler(
         ctx.accounts.vault_tutoken_a.key(), // we want vault to have token
         *ctx.accounts.reserve_account.key,
         ctx.accounts.reserve_liquidity_supply.key(),
-        ctx.accounts.token_a_mint.key(),
+        ctx.accounts.tutoken_a_mint.key(),
         *ctx.accounts.lending_market.key,
         *ctx.accounts.user.key,
         //*ctx.accounts.lending_market_authority.key,
     );
 
-    msg!("{:?}",ctx.accounts.user.to_account_info());
-    msg!("{:?}",ctx.accounts.lending_market.to_account_info());
-    msg!("{:?}",ctx.accounts.lending_market_authority.to_account_info());
-    msg!("about to invoke");
+    // msg!("{:?}",ctx.accounts.user.to_account_info());
+    // msg!("{:?}",ctx.accounts.lending_market.to_account_info());
+    // msg!("{:?}",ctx.accounts.lending_market_authority.to_account_info());
+    // msg!("about to invoke");
     solana_program::program::invoke(
         &ix,
         &ctx.accounts.to_account_infos(),
@@ -134,7 +151,7 @@ pub struct Deposit<'info> {
     pub token_b_mint: Box<Account<'info, Mint>>,
 
     /// tuToken A mint
-    #[account()]//address = tutoken_a_mint_address)]
+    #[account(mut)]//address = tutoken_a_mint_address)]
     pub tutoken_a_mint: Box<Account<'info, Mint>>,
 
     /// tuToken B mint
@@ -196,6 +213,10 @@ pub struct Deposit<'info> {
     /// CHECK: tulip checks underneath
     #[account(mut)]
     pub reserve_account: UncheckedAccount<'info>,
+
+    /// CHECK: no type available for oracle account
+    #[account(mut)]
+    pub price_oracle: UncheckedAccount<'info>,
 
     #[account(mut)]
     pub reserve_liquidity_supply: Box<Account<'info, TokenAccount>>,

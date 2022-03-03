@@ -264,6 +264,8 @@ describe("splendor", () =>  {
         user: user.publicKey,
         userATokenAta: userUSDC,
         userBTokenAta: userUSDT,
+        // price oracle
+        priceOracle: new anchor.web3.PublicKey("ExzpbWgczTgd8J58BrnESndmzBkRVfc6PhFjSGiQXgAB"),
         // userATokenAta: 
         // Vault Stuff
         vaultInfo: vaultInfo,

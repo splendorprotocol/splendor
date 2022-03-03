@@ -36,6 +36,9 @@ address = "D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym"
 address = "HsUZsMSrGBvGBncppitE4Ug8qJypZwHRgStYzCEW8fiD"
 [[test.validator.clone]]
 address = "2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"
+[[test.validator.clone]]
+address = "ExzpbWgczTgd8J58BrnESndmzBkRVfc6PhFjSGiQXgAB" # USDC price
+
 
 [test.validator]
 url = "m"
