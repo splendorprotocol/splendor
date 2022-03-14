@@ -1,4 +1,12 @@
+from solana.rpc.api import Client
+solana_client = Client("https://api.mainnet-beta.solana.com")
 
+currentslot = solana_client.get_epoch_info()['result']['absoluteSlot']
+print(solana_client.get_epoch_info()['result']['absoluteSlot'])
+
+buffer = 0
+
+Anchor_toml =f'''
 [features]
 seeds = false
 [programs.localnet]
@@ -51,7 +59,7 @@ address = "SysvarS1otHistory11111111111111111111111111" # SLOT HISTORY
 
 [test.validator]
 url = "m"
-warp_slot = "124510445"
+warp_slot = "{currentslot+buffer}"
 
 [provider]
 cluster = "localnet"
@@ -62,3 +70,7 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 
 [test]
 startup_wait = 60000
+'''
+f = open('Anchor.toml', 'w')
+f.write(Anchor_toml)
+f.close()

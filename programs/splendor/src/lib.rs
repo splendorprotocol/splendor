@@ -7,6 +7,7 @@ pub mod constants;
 pub mod address;
 pub mod instructions;
 pub mod types;
+pub mod pyth;
 
 use types::ProgramResult;
 
@@ -30,11 +31,11 @@ pub mod splendor {
 
     pub fn deposit(
         ctx: Context<Deposit>,
-        _bumps: [u8; 6],
+        bumps: [u8; 6],
         token_a_lamports: u32,
         token_b_lamports: u32,
     ) -> ProgramResult {
-        instructions::deposit::handler(ctx, token_a_lamports, token_b_lamports)
+        instructions::deposit::handler(ctx, token_a_lamports, token_b_lamports, bumps)
     }
 
     pub fn withdraw(

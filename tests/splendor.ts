@@ -248,9 +248,10 @@ describe("splendor", () =>  {
     const userTUUSDC = new PublicKey("6wQkK76HdRLtVB11V6Tcvp92WmSwSSf6V64kvYbe3xTd");
     const userTUUSDT = new PublicKey("34bmioDCWJqaig6SN3b28TAAtrbWL35byabBVmagVzR7");
 
-    console.log("after create usdc ata", userUSDC.toString())
+    console.log("after create usdc ata", userUSDC.toString());
     //console.log("user public key", user.publicKey.toString())
 
+    console.log("clock pubkey: ", anchor.web3.SYSVAR_CLOCK_PUBKEY);
     const tx = await program.rpc.deposit(
       
       // Instruction Arguments
@@ -286,9 +287,10 @@ describe("splendor", () =>  {
         systemProgram: systemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-        lendingProgram: new anchor.web3.PublicKey("4bcFeLv4nydFrsZqV5CgwCVrPhkQKsXtzfy2KyMz7ozM"),
+        tulipLendingProgram: new anchor.web3.PublicKey("4bcFeLv4nydFrsZqV5CgwCVrPhkQKsXtzfy2KyMz7ozM"),
         //lendingProgram:  new anchor.web3.PublicKey("LendZqTs7gn5CTSJU1jWKhKuVpjJGom45nnwPb2AMTi"),
-        sysVarClock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        //sysVarClock: anchor.web3.SYSVAR_CLOCK_PUBKEY,
+        sysVarClock: new anchor.web3.PublicKey("SysvarC1ock11111111111111111111111111111111"),
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         // Tulip Accounts
         destinationCollateral: new anchor.web3.PublicKey("2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"),
