@@ -136,8 +136,6 @@ pub struct InitializeVault<'info> {
         mint::decimals = 9,
         mint::authority = vault_authority,
         mint::freeze_authority = vault_authority,
-        // seeds = [VAULT_REDEEMABLE_MINT_SEED.as_bytes(), vault_name.as_bytes()],
-        // bump,
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
 
