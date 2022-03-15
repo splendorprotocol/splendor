@@ -11,7 +11,6 @@ use solana_program::{
     decode_error::DecodeError,
     instruction::Instruction,
     msg,
-    program::{invoke, invoke_signed},
     program_error::{PrintProgramError, ProgramError},
     program_pack::{IsInitialized, Pack},
     pubkey::Pubkey,
@@ -150,50 +149,71 @@ pub fn handler(
     )?;
 
     // Mint our token to user's wallet
-    msg!("Creating mint ix");
+    // msg!("Creating mint ix");
     let mint_amount = 1; //TODO
-    // Construct instruction using spl_token library
-    let ix = spl_token::instruction::mint_to(
+    // // Construct instruction using spl_token library
+    // let ix = spl_token::instruction::mint_to_checked(
 
-        // token_program_id: &Pubkey, 
-        // mint_pubkey: &Pubkey, 
-        // account_pubkey: &Pubkey, 
-        // owner_pubkey: &Pubkey, 
-        // signer_pubkeys: &[&Pubkey], 
-        // amount: u64
-        // decimals: u8
+    //     // token_program_id: &Pubkey, 
+    //     // mint_pubkey: &Pubkey, 
+    //     // account_pubkey: &Pubkey, 
+    //     // owner_pubkey: &Pubkey, 
+    //     // signer_pubkeys: &[&Pubkey], 
+    //     // amount: u64
+    //     // decimals: u8
 
-        &ctx.accounts.token_program.key(),
-        &ctx.accounts.redeemable_mint.key(),
-        &ctx.accounts.user.key(),
-        &ctx.accounts.vault_info.key(),//&ctx.program_id,
-        &[],//&ctx.accounts.vault_admin.key()],
-        mint_amount,
-        //ctx.accounts.token_mint.decimals,
-    )?;
+    //     &ctx.accounts.token_program.key(),
+    //     &ctx.accounts.redeemable_mint.key(),
+    //     &ctx.accounts.user_redeemable_ata.key(),
+    //     &ctx.accounts.vault_authority.key(),//&ctx.accounts.user.key(),
+    //     &[&ctx.accounts.vault_authority.key()],
+    //     mint_amount,
+    //     ctx.accounts.redeemable_mint.decimals,
+    // )?;
 
+    // // The vault name is stored in the non-empty bytes in vault_info.vault_name
+    // // Need to filter empty bytes and then convert to string.
     let vault_name_bytes = &ctx.accounts.vault_info.vault_name
         .iter()
         .filter(|x| **x != 0)
         .map(|&x| x)
         .collect::<Vec<u8>>()
         .clone();
-    let vault_name = &std::str::from_utf8(vault_name_bytes)
+    let vault_name = std::str::from_utf8(vault_name_bytes)
         .unwrap();
-    let seeds: &[&[u8]] = &[vault_name.as_bytes()];
-    solana_program::program::invoke_signed(
-        &ix,
-        &[
-            //ctx.accounts.token_program.to_account_info(),
-            ctx.accounts.redeemable_mint.to_account_info(),
-            //ctx.accounts.program.to_account_info(),
-            ctx.accounts.user.to_account_info(),
-            ctx.accounts.vault_info.to_account_info(),
-        ],
-        //&[&[TOKEN_VAULT_SEED.as_bytes()]],
-        &[&[seeds, &[&[bumps[0]]]].concat()],
-    ).expect("failed to refresh reserve");
+    msg!("unpacked vault_name as {}", vault_name);
 
+    // // Pack seeds for pda that will sign mint to tx
+    // let seeds: &[&[u8]] = &[VAULT_AUTHORITY_SEED.as_bytes(), vault_name.as_bytes()];
+    // let signer_seeds = &[seeds, &[&[bumps[1]]]];
+    // msg!("invoking redeemable mint_to ix");
+    // solana_program::program::invoke_signed(
+    //     &ix,
+    //     &[
+    //         //ctx.accounts.token_program.to_account_info(),
+    //         ctx.accounts.redeemable_mint.to_account_info(),
+    //         //ctx.accounts.program.to_account_info(),
+    //         ctx.accounts.user_redeemable_ata.to_account_info(),
+    //         //ctx.accounts.user.to_account_info(),
+    //         ctx.accounts.vault_authority.to_account_info(),
+    //     ],
+    //     //&[&[TOKEN_VAULT_SEED.as_bytes()]],
+    //     //signer_seeds,
+    //     &[],
+    // )?;
+
+    anchor_spl::token::mint_to(
+        CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            anchor_spl::token::MintTo {
+                mint: ctx.accounts.redeemable_mint.to_account_info(),
+                to: ctx.accounts.user_redeemable_ata.to_account_info(),
+                authority: ctx.accounts.vault_authority.to_account_info(),
+            },
+            &[&[&VAULT_AUTHORITY_SEED.as_bytes(),&vault_name.as_bytes(), &[bumps[1]]]],
+        ),
+        mint_amount,
+    )?;
     Ok(())
 }
 
@@ -296,6 +316,17 @@ pub struct Deposit<'info> {
     )]
     pub user_b_token_ata: Box<Account<'info, TokenAccount>>,
 
+    /// User ata that stores token a
+    #[account(
+        init,
+        payer = user,
+        constraint = user_redeemable_ata.owner == user.key(),
+        // constraint = user_b_token_ata.mint == vault_info.token_b_mint
+        associated_token::mint = redeemable_mint,
+        associated_token::authority = user,
+    )]
+    pub user_redeemable_ata: Box<Account<'info, TokenAccount>>,
+
     #[account(mut)]
     pub destination_collateral: Box<Account<'info, TokenAccount>>,
 
@@ -319,7 +350,7 @@ pub struct Deposit<'info> {
     pub lending_market_authority: UncheckedAccount<'info>,
 
     /// Mint of user's redeemable token (e.g. spUSD)
-    #[account(address=vault_info.redeemable_mint)]
+    #[account(mut, address=vault_info.redeemable_mint)]
     pub redeemable_mint: Box<Account<'info, Mint>>,
 
     /// System Programs
