@@ -424,6 +424,22 @@ describe("splendor", () => {
       redeemableMint.publicKey
     );
 
+    let beforeBalanceUserA = new anchor.BN(
+      (await provider.connection.getTokenAccountBalance(userUSDC)).value.amount
+    );
+    let beforeBalanceUserB = new anchor.BN(
+      (await provider.connection.getTokenAccountBalance(userUSDT)).value.amount
+    );
+    let beforeBalanceVaultA = new anchor.BN(
+      (
+        await provider.connection.getTokenAccountBalance(vaultTutokenA)
+      ).value.amount
+    );
+    let beforeBalanceVaultB = new anchor.BN(
+      (
+        await provider.connection.getTokenAccountBalance(vaultTutokenB)
+      ).value.amount
+    );
     const tx = await program.rpc.deposit(
       // Instruction Arguments
       [
@@ -434,20 +450,22 @@ describe("splendor", () => {
         tutokenABump,
         tutokenBBump,
       ],
-      1,
-      1,
+      new anchor.BN(1),
+      new anchor.BN(1),
       // Accounts
       {
         accounts: {
           user: user.publicKey,
-          userATokenAta: userUSDC,
-          userBTokenAta: userUSDT,
+          userTokenAAta: userUSDC,
+          userTokenBAta: userUSDT,
           userRedeemableAta: userRedeemable,
           // price oracle
-          priceOracle: new anchor.web3.PublicKey(
+          usdcPriceOracle: new anchor.web3.PublicKey(
             "ExzpbWgczTgd8J58BrnESndmzBkRVfc6PhFjSGiQXgAB"
           ),
-          // userATokenAta:
+          usdtPriceOracle: new anchor.web3.PublicKey(
+            "uo3MK2mD9KogjNLxTWVaB5XqA9Hg4mx4QuRm9SRtKdE" // "3vxLXJqLqF3JG5TCbYycbKWRBbCJQLxQmBGCkyqEEefL"
+          ),
           // Vault Stuff
           vaultInfo: vaultInfo,
           vaultAuthority: vaultAuthority,
@@ -476,19 +494,29 @@ describe("splendor", () => {
             "SysvarC1ock11111111111111111111111111111111"
           ),
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          // Tulip Accounts
+          // This is our vault
           destinationCollateral: new anchor.web3.PublicKey(
             "2U6kk4iTVqeypBydVPKA8mLTLAQEBfWf4KYfmkcvomPE"
           ),
-          reserveAccount: new anchor.web3.PublicKey(
+          // Tulip Accounts
+          usdcReserveAccount: new anchor.web3.PublicKey(
             "FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt"
           ),
-          reserveLiquiditySupply: new anchor.web3.PublicKey(
+          usdtReserveAccount: new anchor.web3.PublicKey(
+            "Csn3exasdhDzxYApmnci3d8Khb629VmgK4NQqdeyZBNt"
+          ),
+          // These hold tokens for tulip, i.e. these are the lending pools
+          usdcReserveLiquiditySupply: new anchor.web3.PublicKey(
             "64QJd6MYXUjCBvCaZKaqxiKmaMkPUdNonE1KuY1YoGGb"
           ),
+          usdtReserveLiquiditySupply: new anchor.web3.PublicKey(
+            "124J21csiR1FdDywteXa8LhAmeqBXZRvozhoE7zq9znc"
+          ),
+          // lending market
           lendingMarket: new anchor.web3.PublicKey(
             "D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym"
           ),
+          // This is account 6 which is constant.... will just rename for now
           lendingMarketAuthority: new anchor.web3.PublicKey(
             "8gEGZbUfVE1poBq71VHKX9LU7ca4x8wTUyZgcbyQe51s"
           ),
@@ -496,6 +524,31 @@ describe("splendor", () => {
         signers: [user],
       }
     );
+    let afterBalanceUserA = new anchor.BN(
+      (await provider.connection.getTokenAccountBalance(userUSDC)).value.amount
+    );
+    let afterBalanceUserB = new anchor.BN(
+      (await provider.connection.getTokenAccountBalance(userUSDT)).value.amount
+    );
+    let afterBalanceVaultA = new anchor.BN(
+      (
+        await provider.connection.getTokenAccountBalance(vaultTutokenA)
+      ).value.amount
+    );
+    let afterBalanceVaultB = new anchor.BN(
+      (
+        await provider.connection.getTokenAccountBalance(vaultTutokenB)
+      ).value.amount
+    );
+
+    // Check user and vault balances
+    // User balances should have decreased
+    // vault balances should increase
+    assert(afterBalanceUserA.sub(beforeBalanceUserA).eq(new anchor.BN(-1)));
+    assert(afterBalanceUserB.sub(beforeBalanceUserB).eq(new anchor.BN(-1)));
+    assert(!afterBalanceVaultA.sub(beforeBalanceVaultA).isNeg());
+    assert(!afterBalanceVaultB.sub(beforeBalanceVaultA).isNeg());
+
     console.log("tx", tx);
   });
 

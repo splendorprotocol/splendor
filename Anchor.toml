@@ -28,9 +28,9 @@ address = "6wQkK76HdRLtVB11V6Tcvp92WmSwSSf6V64kvYbe3xTd" # DEVLET TUUSDC (2)
 [[test.validator.clone]]
 address = "34bmioDCWJqaig6SN3b28TAAtrbWL35byabBVmagVzR7" # DEVLET TUUSDT (2)
 [[test.validator.clone]]
-address = "FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt"
+address = "FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt" # Tulip USDC reserve account
 [[test.validator.clone]]
-address = "64QJd6MYXUjCBvCaZKaqxiKmaMkPUdNonE1KuY1YoGGb"
+address = "64QJd6MYXUjCBvCaZKaqxiKmaMkPUdNonE1KuY1YoGGb" # Tulip's USDC token account (i.e. the lending pool)
 [[test.validator.clone]]
 address = "D1cqtVThyebK9KXKGXrCEuiqaNf5L4UfM1vHgCqiJxym" # lendingMarket
 [[test.validator.clone]]
@@ -44,14 +44,19 @@ address = "5JQ8Mhdp2wv3HWcfjq9Ts8kwzCAeBADFBDAgBznzRsE4" # USDC price oracle met
 [[test.validator.clone]]
 address = "897c9JQNbYRR7RaDew7mqiZzFF3TXB67gSmk27XNn9vZ" # USDC price
 [[test.validator.clone]]
-address = "SysvarC1ock11111111111111111111111111111111" # CLOCK
+address = "uo3MK2mD9KogjNLxTWVaB5XqA9Hg4mx4QuRm9SRtKdE"# "3vxLXJqLqF3JG5TCbYycbKWRBbCJQLxQmBGCkyqEEefL" # USDT price
 [[test.validator.clone]]
-address = "SysvarS1otHistory11111111111111111111111111" # SLOT HISTORY
-
+address = "Av6XyAMJnyi68FdsKSPYgzfXGjYrrt6jcAMwtvzLCqaM" # USDT product
+[[test.validator.clone]]
+address = "Csn3exasdhDzxYApmnci3d8Khb629VmgK4NQqdeyZBNt" # Tulip USDT reserve account
+[[test.validator.clone]]
+address = "124J21csiR1FdDywteXa8LhAmeqBXZRvozhoE7zq9znc" # Tulip USDT reserve liquidity supply
 
 [test.validator]
-url = "m"
-warp_slot = "124510445"
+#url = "m"
+url = "https://api.mainnet-beta.solana.com"
+warp_slot = "128233955"
+ticks_per_slot = 10000000
 
 [provider]
 cluster = "localnet"
