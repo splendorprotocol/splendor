@@ -32,8 +32,8 @@ pub mod splendor {
     pub fn deposit(
         ctx: Context<Deposit>,
         bumps: [u8; 6],
-        token_a_lamports: u32,
-        token_b_lamports: u32,
+        token_a_lamports: u64,
+        token_b_lamports: u64,
     ) -> ProgramResult {
         instructions::deposit::handler(ctx, token_a_lamports, token_b_lamports, bumps)
     }

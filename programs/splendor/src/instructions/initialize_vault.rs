@@ -48,6 +48,7 @@ pub struct InitializeVault<'info> {
     /// Vault Info
     #[account(
         init,
+        space = 8 + 8*20 + 32*3,
         payer = vault_admin,
         seeds = [{msg!("initializing vault_info"); VAULT_INFO_SEED}.as_bytes(), vault_name.as_bytes()],
         bump,
@@ -57,17 +58,12 @@ pub struct InitializeVault<'info> {
     /// Vault authority: PDA which manages everything within the vault
     #[account(
         init,
+        space = 8 + 1,
         payer = vault_admin,
         seeds = [{msg!("initializing vault_authority"); VAULT_AUTHORITY_SEED}.as_bytes(), vault_name.as_bytes()],
         bump,
     )]
     pub vault_authority: Box<Account<'info, VaultAuthority>>,
-
-    // #[account(
-    //     init,
-    //     payer = vault_admin,
-    // )]
-    // pub vault_mints: Account<'info, VaultMints>,
 
     /// Token A mint
     #[account()]//address = token_a_mint_address)]
@@ -173,4 +169,6 @@ pub struct VaultInfo {
 #[account]
 #[derive(Default)]
 pub struct VaultAuthority {
+    /// Authorized
+    pub authorized: bool
 }
